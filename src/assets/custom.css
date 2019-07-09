@@ -1,0 +1,247 @@
+a {
+    cursor: pointer !important;
+}
+
+.table-custom > tbody p {
+    margin-bottom: 0px;
+    font-weight: bold;
+}
+
+
+.table-custom > tbody > tr > td {
+    font-weight: normal !important;
+}
+
+.main-sidebar .nav .nav-item .nav-link i {
+    font-size: 1.125rem;
+    top: -1px;
+}
+
+.table-responsive {
+    display: table;
+}
+
+.clickable-row {
+    cursor: pointer;
+}
+
+.modal-backdrop.fade {
+    opacity: .5 !important;
+}
+
+.main-sidebar {
+    z-index: 1039 !important;
+}
+
+.modal.in {
+    display: block!important;
+    -webkit-transition: all .5s ease-in-out;
+    transition: all .5s ease-in-out;
+    opacity: 1 !important;
+}
+
+.modal-dialog {
+    margin-top: 15% !important;
+}
+
+.form-group .react-datepicker-wrapper {
+    display: block;
+}
+
+.form-group .react-datepicker__input-container {
+    width: 100%;
+}
+
+
+.profile-user {
+    position: relative;
+    min-height: 250px;
+    margin-bottom: 30px;
+}
+
+.profile-user .btn-group.open .dropdown-toggle {
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+}
+
+.profile-user .btn-profile {
+    position: absolute;
+    right: 10px;
+}
+
+.profile-wrapper img {
+    width: 100px;
+}
+
+.profile-wrapper .title {
+    font-weight: 700;
+    font-size: 1.2em;
+    color: #3d9cdb;
+}
+
+.bottom-profile {
+    margin-top: 20px;
+}
+
+.bottom-profile .text-small {
+    font-size: .8em;
+}
+
+.img-circle {
+    border-radius: 50%;
+}
+
+.btn-transparent {
+    background-color: transparent;
+    float: right;
+}
+
+button:focus {
+    outline:0 !important;
+}
+
+.page-link:focus {
+    box-shadow: none !important;
+}
+
+.css-1pcexqc-container {
+    font-weight: 200 !important;
+    font-size: .8125rem !important;
+}
+
+.css-lszy77t-control:hover {
+    border: none !important;
+    color: #495057;
+    background-color: #fff;
+    border-color: #007bff;
+    box-shadow: 0 0.313rem 0.719rem rgba(0,123,255,.1), 0 0.156rem 0.125rem rgba(0,0,0,.06)
+}
+
+.css-lszy77t-control {
+    border: none !important;
+    color: #495057;
+    background-color: #fff;
+    border-color: #007bff;
+    box-shadow: 0 0.313rem 0.719rem rgba(0,123,255,.1), 0 0.156rem 0.125rem rgba(0,0,0,.06)
+}
+
+.css-kj6f9i-menu {
+    z-index: 999 !important;
+    cursor: pointer !important;
+}
+
+.list-group-flush {
+    width: 100%;
+}
+
+/* profile */
+
+.profile-card {
+    padding: 40px 30px;
+    text-align: center;
+    background-color: #fff;
+    margin-bottom: 30px;
+    box-shadow: 0 0.46875rem 2.1875rem rgba(90,97,105,.1), 0 0.9375rem 1.40625rem rgba(90,97,105,.1), 0 0.25rem 0.53125rem rgba(90,97,105,.12), 0 0.125rem 0.1875rem rgba(90,97,105,.1);
+    border-radius: 8px;
+}
+
+.profile-card img {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 20px;
+    border: 2px solid #e1e1e1;
+    object-fit: cover;
+}
+
+.profile-card h2 {
+    font-size: 1.5em;
+    margin: 0;
+    font-weight: 500;
+    color: #3d5170;
+}
+
+.profile-card p {
+    margin-bottom: 5px;
+}
+
+.css-1a57z3m-control {
+    cursor: pointer !important;
+}
+
+.messagebox {
+    position: absolute;
+    z-index: 9999;
+    box-shadow: 5px 3px 30px rgba(29, 29, 29, 0.17);
+    background: #fff;
+    padding: 30px;
+    top: 0px;
+    margin: 5% 25%;
+    border: 1px solid #e1e1e1;
+}
+
+.backdrop {
+    position: fixed;
+    background-color: #33333342;
+    width: 100%;
+    height: 100%;
+    z-index: 1040;
+    top: 0;
+    left: 0;
+}
+
+.css-e110bw {
+    z-index: 1039 !important;
+}
+
+.css-1wa3eu0-placeholder, .css-1uccc91-singleValue {
+    font-size: 13px !important;
+    font-weight: normal !important;
+}
+
+.auth-form__logo_custom {
+    width: 5rem !important;
+}
+.main-logo-custom {
+    width: 40px !important;
+}
+
+.main-navbar__search .brand {
+    display: block;
+    padding: 15px 20px;
+    font-size: 1.5em;
+}
+
+.table-custom th {
+    position: relative;
+    cursor: pointer;
+    padding-right: 35px !important;
+  }
+  
+  .table-sorting {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #ccc;
+  }
+  
+  .table-sorting.active {
+    color: #007bff;
+  }
+  
+  .table-custom td p {
+    margin-bottom: 0px !important;
+  }
+  
+  .table-custom td div {
+    margin-top: 10px;
+  }
+  
+  .table-custom td div button:first-child {
+    margin-right: 5px;
+  }
+
+  .custom-file-label {
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  
