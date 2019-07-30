@@ -154,7 +154,7 @@ class Barber extends React.Component {
 			<Container fluid className="main-content-container px-4">
 				<Loading
 						show={fetching}
-						color="blue"
+						color="purple"
 						showSpinner={false}
 						/>
 				<Helmet>

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Navbar, NavbarBrand } from "shards-react";
-import Logo from '../../../images/shards-dashboards-logo.svg';
+import Logo from '../../../images/logo.png';
 
 import { Dispatcher, Constants } from "../../../flux";
 

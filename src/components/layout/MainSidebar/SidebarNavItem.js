@@ -1,59 +1,79 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { NavLink as RouteNavLink } from "react-router-dom";
-import { NavItem, NavLink } from "shards-react";
+import { NavItem, NavLink, Dropdown, DropdownToggle, Collapse, DropdownMenu, DropdownItem } from "shards-react";
 
-const SidebarNavItem = ({ item, handleClick, toggle }) => (
-  <div>
-    {
-      item.children ? (
-        <NavItem>
-        <NavLink onClick={handleClick} className="dropdown-toggle" id={item.title}>
-        {item.htmlBefore && (
-        <div
-          className="d-inline-block item-icon-wrapper"
-          dangerouslySetInnerHTML={{ __html: item.htmlBefore }}
-        />
-      )}
-      {item.title && <span>{item.title}</span>}
-      {item.htmlAfter && (
-        <div
-          className="d-inline-block item-icon-wrapper"
-          dangerouslySetInnerHTML={{ __html: item.htmlAfter }}
-        />
-      )}
-    </NavLink>
-      <div tabIndex="-1" role="menu" className={`collapse dropdown-menu dropdown-menu-small ${ toggle[item.title] ? 'show' : '' }`}>
-        {
-          item.children.map((child, key) => {
-            return (<NavLink key={key} tag={RouteNavLink} tabIndex="0" className="dropdown-item" to={child.to}>{child.title}</NavLink>)
-          })
-        }
-      </div>    
-      </NavItem>
+class SidebarNavItem extends React.Component {
+  state = {
+    visible: false
+  }
 
-      ) : (
-        <NavItem>
-        <NavLink tag={ RouteNavLink } to={item.to}>
-          {item.htmlBefore && (
-          <div
-            className="d-inline-block item-icon-wrapper"
-            dangerouslySetInnerHTML={{ __html: item.htmlBefore }}
-          />
-        )}
-        {item.title && <span>{item.title}</span>}
-        {item.htmlAfter && (
-          <div
-            className="d-inline-block item-icon-wrapper"
-            dangerouslySetInnerHTML={{ __html: item.htmlAfter }}
-          />
-        )}
-      </NavLink>
+  handleToggle = () => {
+    this.setState({
+      visible: !this.state.visible
+    });
+  }
+
+  render() {
+    const {item} = this.props;
+    return (
+      <NavItem>
+      {
+        item.children ? (
+
+          <NavItem tag={Dropdown} caret toggle={this.handleToggle}>
+            <DropdownToggle caret tag={NavLink} className="text-nowrap px-3">
+              {item.htmlBefore && (
+                  <div
+                    className="d-inline-block item-icon-wrapper"
+                    dangerouslySetInnerHTML={{ __html: item.htmlBefore }}
+                  />
+                )}
+                {item.title && <span>{item.title}</span>}
+                {item.htmlAfter && (
+                  <div
+                    className="d-inline-block item-icon-wrapper"
+                    dangerouslySetInnerHTML={{ __html: item.htmlAfter }}
+                  />
+                )}
+            </DropdownToggle>
+            <Collapse tag={DropdownMenu} right small open={this.state.visible}>
+              {
+                item.children.map((drop, index) => {
+                  return (
+                    <DropdownItem tag={RouteNavLink} to={drop.to} key={index}>
+                        {drop.title && <span>{drop.title}</span>}
+                    </DropdownItem>
+                  )
+                })
+              }
+            
+            </Collapse>
+          </NavItem>
+
+        ) : (
+          <NavLink tag={RouteNavLink} to={item.to}>
+              {item.htmlBefore && (
+                <div
+                  className="d-inline-block item-icon-wrapper"
+                  dangerouslySetInnerHTML={{ __html: item.htmlBefore }}
+                />
+              )}
+              {item.title && <span>{item.title}</span>}
+              {item.htmlAfter && (
+                <div
+                  className="d-inline-block item-icon-wrapper"
+                  dangerouslySetInnerHTML={{ __html: item.htmlAfter }}
+                />
+              )}
+          </NavLink>
+          
+        )
+      }
       </NavItem>
-      )
-    }
-    </div>
-);
+    )
+  }
+}
 
 SidebarNavItem.propTypes = {
   /**

@@ -1,5 +1,5 @@
 import React from 'react';
-import Logo from '../images/shards-dashboards-logo.svg';
+import Logo from '../images/logo.png';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import {login} from '../store/actions/authActions';
@@ -33,7 +33,7 @@ class Login extends React.Component {
             <main className="main-content col mt-5">
                 <Loading
                     show={fetching}
-                    color="blue"
+                    color="purple"
                     showSpinner={false}
                     />
                 <Helmet>

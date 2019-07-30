@@ -1,5 +1,5 @@
 import React from 'react';
-import Logo from '../images/shards-dashboards-logo.svg';
+import Logo from '../images/logo.png';
 import { Link } from 'react-router-dom';
 import { appName } from '../global';
 import { Helmet } from 'react-helmet';
