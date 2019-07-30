@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardHeader, CardBody, DatePicker } from 'shards-react';
+import { Card, CardHeader, CardBody } from 'shards-react';
 import '../../assets/range-date-picker.css';
 
 class TableDick extends React.Component {

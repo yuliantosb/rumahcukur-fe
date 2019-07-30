@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { ComposableMap, ZoomableGroup, Geographies, Geography, Markers, Marker } from 'react-simple-maps';
 import { scaleLinear } from 'd3-scale';
-import request from 'axios';
 import { Card, CardBody, CardHeader } from 'shards-react';
 import World50m from '../../static/world-50m.json';
 import worldPopulation from '../../static/world-population.json';
