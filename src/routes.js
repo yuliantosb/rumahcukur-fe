@@ -11,6 +11,8 @@ import ForgotPassword from "./views/ForgotPassword";
 import Register from "./views/Register";
 import Barber from "./views/barber/Index";
 import AddBarber from "./views/barber/Add";
+import EditBarber from "./views/barber/Edit";
+import ViewBarber from "./views/barber/View";
 import Coupon from "./views/coupon/Index";
 
 export default [
@@ -50,6 +52,16 @@ export default [
     path: "/barber/create",
     layout: DefaultLayout,
     component: AddBarber
+  },
+  {
+    path: "/barber/edit/:id",
+    layout: DefaultLayout,
+    component: EditBarber
+  },
+  {
+    path: "/barber/view/:id",
+    layout: DefaultLayout,
+    component: ViewBarber
   },
   {
     path: "/coupon",

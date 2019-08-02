@@ -66,14 +66,23 @@ const getBarber = (id) => {
 const updateBarber = (id, data) => {
     return (dispatch, getState) => {
         dispatch({
-            type: 'SAVE_BARBER',
+            type: 'UPDATE_BARBER',
             payload: Axios.put(`${url}/barber/${id}`, {
                 name: data.name,
-                place_of_birth: data.place_of_birth,
-                date_of_birth: moment(data.date_of_birth).format('YYYY-MM-DD'),
-                email: data.email,
-                phone_number: data.phone_number,
                 address: data.address,
+                latitude: data.latitude,
+                longitude: data.longitude,
+                province: data.province,
+                regency: data.regency,
+                district: data.district,
+                village: data.village,
+                phone: data.phone,
+                email: data.email,
+                status: data.status,
+                photo: data.photo,
+                photo_file: data.photo_file,
+                id_card: data.id_card,
+                id_card_file: data.id_card_file
             }, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem('token')}`

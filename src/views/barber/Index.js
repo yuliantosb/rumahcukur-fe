@@ -10,6 +10,7 @@ import { fetchBarber, deleteBarber } from '../../store/actions/barberAction';
 import Loading from 'react-loading-bar';
 import {connect} from 'react-redux';
 import Table from '../../components/common/Table';
+import ReactTooltip from 'react-tooltip';
 
 class Barber extends React.Component {
 
@@ -83,6 +84,18 @@ class Barber extends React.Component {
 		});
 	}
 
+	handleSorting = (e) => {
+        const type = e.target.id;
+        const sort = this.state.ordering.sort;
+        this.setState({
+			...this.state,
+            ordering: {
+                type: type,
+                sort: sort === 'asc' ? 'desc' : 'asc'
+            }
+        });
+    }
+
     componentWillUpdate(nextProps, nextState) {
         if (this.state.page !== nextState.page) {
             this.props.fetchBarber(nextState);
@@ -90,7 +103,11 @@ class Barber extends React.Component {
 
         if (this.state.perpage !== nextState.perpage) {
             this.props.fetchBarber(nextState);
-        }
+		}
+		
+		if (this.state.ordering !== nextState.ordering) {
+			this.props.fetchBarber(nextState);
+		}
     }
     
     componentDidUpdate = (prevProps, prevState) => {
@@ -143,8 +160,10 @@ class Barber extends React.Component {
 				<td>{ barber.phone }</td>
 				<td>{ barber.address }</td>
 				<td className="text-center">
-					<Link to={`/barber/edit/${barber.id}`} className="btn btn-link text-success btn-sm px-0 mr-2"><i className="mdi mdi-pencil"></i></Link>
-                    <button onClick={() => this.handleClickDelete(barber.id) } className="btn btn-link text-danger btn-sm px-0"><i className="mdi mdi-delete"></i></button>
+					<Link data-tip="Edit" to={`/barber/edit/${barber.id}`} className="btn btn-link text-success btn-sm px-0 mr-2"><i className="mdi mdi-pencil"></i></Link>
+					<Link data-tip="View" to={`/barber/view/${barber.id}`} className="btn btn-link text-info btn-sm px-0 mr-2"><i className="mdi mdi-eye"></i></Link>
+                    <button data-tip="Delete" onClick={() => this.handleClickDelete(barber.id) } className="btn btn-link text-danger btn-sm px-0"><i className="mdi mdi-delete"></i></button>
+					<ReactTooltip />
 				</td>
             </tr>
             );

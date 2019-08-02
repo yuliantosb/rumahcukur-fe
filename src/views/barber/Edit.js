@@ -6,7 +6,7 @@ import { appName } from '../../global';
 import { Helmet } from 'react-helmet';
 import { Link, Redirect } from 'react-router-dom';
 import { withToastManager } from 'react-toast-notifications';
-import { saveBarber } from '../../store/actions/barberAction';
+import { updateBarber, getBarber } from '../../store/actions/barberAction';
 import {connect} from 'react-redux';
 import Loading from 'react-loading-bar';
 import Error500 from '../Error500';
@@ -59,7 +59,7 @@ class AddBarber extends React.Component {
 
 	handleSubmit = (e) => {
 		e.preventDefault();
-        this.props.saveBarber(this.state);
+        this.props.updateBarber(this.props.match.params.id, this.state);
     }
 
     componentDidUpdate = (prevProps, prevState) => {
@@ -85,6 +85,33 @@ class AddBarber extends React.Component {
                 }
             }
         }
+    }
+
+    componentWillUpdate = (nextProps) => {
+        if (nextProps !== this.props) {
+            if (nextProps.data) {
+                this.setState({
+                    ...this.state,
+                    name: nextProps.data.name ? nextProps.data.name : '',
+                    email: nextProps.data.email ? nextProps.data.email : '',
+                    phone: nextProps.data.phone ? nextProps.data.phone : '',
+                    latitude: nextProps.data.latitude ? nextProps.data.latitude : '',
+                    longitude: nextProps.data.longitude ? nextProps.data.longitude : '',
+                    photo: nextProps.data.photo ? nextProps.data.photo : '',
+                    id_card: nextProps.data.id_card ? nextProps.data.id_card : '',
+                    status: nextProps.data.status ? nextProps.data.status : '',
+                    province: nextProps.data.province ? nextProps.data.province : '',
+                    regency: nextProps.data.regency ? nextProps.data.regency : '',
+                    district: nextProps.data.district ? nextProps.data.district : '',
+                    village: nextProps.data.village ? nextProps.data.village : '',
+                    address: nextProps.data.address ? nextProps.data.address : '',
+                })
+            }
+        }
+    }
+
+    componentDidMount = () => {
+        this.props.getBarber(this.props.match.params.id);
     }
     
 	render() {      
@@ -120,7 +147,7 @@ class AddBarber extends React.Component {
                                                 <div className="col-md-6">
                                                     <div className="form-group">
                                                         <label className="control-label">Name <span className="text-danger">*</span></label>
-                                                        <input type="text" id="name" className={`form-control ${ error && error.data.errors.name && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: John Doe" />
+                                                        <input type="text" id="name" value={ this.state.name } className={`form-control ${ error && error.data.errors.name && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: John Doe" />
                                                         { 
                                                             error && error.data.errors.name && <div class="invalid-feedback">{ error.data.errors.name[0] }</div>
                                                         }
@@ -129,7 +156,7 @@ class AddBarber extends React.Component {
                                                         <div className="col-md-6">
                                                             <div className="form-group">
                                                                 <label className="control-label">Email <span className="text-danger">*</span></label>
-                                                                <input type="text" id="email" className={`form-control ${ error && error.data.errors.email && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: john@example.com" />
+                                                                <input type="text" id="email" value={ this.state.email } className={`form-control ${ error && error.data.errors.email && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: john@example.com" />
                                                                 { 
                                                                     error && error.data.errors.email && <div class="invalid-feedback">{ error.data.errors.email[0] }</div>
                                                                 }
@@ -138,7 +165,7 @@ class AddBarber extends React.Component {
                                                         <div className="col-md-6">
                                                             <div className="form-group">
                                                                 <label className="control-label">Phone <span className="text-danger">*</span></label>
-                                                                <input type="text" id="phone" className={`form-control ${ error && error.data.errors.phone && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: 08123456789" />
+                                                                <input type="text" id="phone" value={ this.state.phone } className={`form-control ${ error && error.data.errors.phone && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: 08123456789" />
                                                                 { 
                                                                     error && error.data.errors.phone && <div class="invalid-feedback">{ error.data.errors.phone[0] }</div>
                                                                 }
@@ -151,7 +178,7 @@ class AddBarber extends React.Component {
                                                         <div className="col-md-6">
                                                             <div className="form-group">
                                                                 <label className="control-label">Latitude <span className="text-danger">*</span></label>
-                                                                <input type="text" id="latitude" className={`form-control ${ error && error.data.errors.latitude && 'is-invalid' }`} onChange={this.handleChange} placeholder="Latitude" />
+                                                                <input type="text" id="latitude" value={ this.state.latitude } className={`form-control ${ error && error.data.errors.latitude && 'is-invalid' }`} onChange={this.handleChange} placeholder="Latitude" />
                                                                 { 
                                                                     error && error.data.errors.latitude && <div class="invalid-feedback">{ error.data.errors.latitude[0] }</div>
                                                                 }
@@ -160,7 +187,7 @@ class AddBarber extends React.Component {
                                                         <div className="col-md-6">
                                                             <div className="form-group">
                                                                 <label className="control-label">Longitude <span className="text-danger">*</span></label>
-                                                                <input type="text" id="longitude" className={`form-control ${ error && error.data.errors.longitude && 'is-invalid' }`} onChange={this.handleChange} placeholder="Longitude" />
+                                                                <input type="text" id="longitude" value={ this.state.longitude } className={`form-control ${ error && error.data.errors.longitude && 'is-invalid' }`} onChange={this.handleChange} placeholder="Longitude" />
                                                                 { 
                                                                     error && error.data.errors.longitude && <div class="invalid-feedback">{ error.data.errors.longitude[0] }</div>
                                                                 }
@@ -192,8 +219,8 @@ class AddBarber extends React.Component {
                                                             error && error.data.errors.photo_file && <small class="help-block font-weight-bold text-danger">{ error.data.errors.photo_file[0] }</small>
                                                         }
                                                     </div>
-                                                
-                                                
+                                                            
+                                                        
                                                     <div className="form-group">
                                                         <label className="control-label">Identity Card</label>
                                                         <div className="custom-file">
@@ -217,10 +244,12 @@ class AddBarber extends React.Component {
                                                             error && error.data.errors.id_card_file && <small class="text-danger font-weight-bold help-block">{ error.data.errors.id_card_file[0] }</small>
                                                         }
                                                     </div>
-                                                
+
+
+
                                                     <div className="form-group">
                                                         <label className="control-label">Status <span className="text-danger">*</span></label>
-                                                        <select id="status" className={`form-control custom-select ${ error && error.data.errors.status && 'is-invalid' }`} onChange={this.handleChange}>
+                                                        <select id="status" value={ this.state.status } className={`form-control custom-select ${ error && error.data.errors.status && 'is-invalid' }`} onChange={this.handleChange}>
                                                                 <option value="actived">Actived</option>
                                                                 <option value="not actived">Not Actived</option>
                                                                 <option value="suspended">Suspended</option>
@@ -238,7 +267,7 @@ class AddBarber extends React.Component {
 
                                                     <div className="form-group">
                                                         <label className="control-label">Province <span className="text-danger">*</span></label>
-                                                        <input type="text" id="province" className={`form-control ${ error && error.data.errors.province && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: DKI Jakarta" />
+                                                        <input type="text" id="province" value={ this.state.province } className={`form-control ${ error && error.data.errors.province && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: DKI Jakarta" />
                                                         { 
                                                             error && error.data.errors.province && <div class="invalid-feedback">{ error.data.errors.province[0] }</div>
                                                         }
@@ -246,7 +275,7 @@ class AddBarber extends React.Component {
 
                                                     <div className="form-group">
                                                         <label className="control-label">Regency <span className="text-danger">*</span></label>
-                                                        <input type="text" id="regency" className={`form-control ${ error && error.data.errors.regency && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: Jakarta Selatan" />
+                                                        <input type="text" id="regency" value={ this.state.regency } className={`form-control ${ error && error.data.errors.regency && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: Jakarta Selatan" />
                                                         { 
                                                             error && error.data.errors.regency && <div class="invalid-feedback">{ error.data.errors.regency[0] }</div>
                                                         }
@@ -254,7 +283,7 @@ class AddBarber extends React.Component {
                                                     
                                                     <div className="form-group">
                                                         <label className="control-label">District <span className="text-danger">*</span></label>
-                                                        <input type="text" id="district" className={`form-control ${ error && error.data.errors.district && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: Palmerah" />
+                                                        <input type="text" id="district" value={ this.state.district } className={`form-control ${ error && error.data.errors.district && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: Palmerah" />
                                                         { 
                                                             error && error.data.errors.district && <div class="invalid-feedback">{ error.data.errors.district[0] }</div>
                                                         }
@@ -262,7 +291,7 @@ class AddBarber extends React.Component {
 
                                                     <div className="form-group">
                                                         <label className="control-label">Village <span className="text-danger">*</span></label>
-                                                        <input type="text" id="village" className={`form-control ${ error && error.data.errors.village && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: Slipi" />
+                                                        <input type="text" id="village" value={ this.state.village } className={`form-control ${ error && error.data.errors.village && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: Slipi" />
                                                         { 
                                                             error && error.data.errors.village && <div class="invalid-feedback">{ error.data.errors.village[0] }</div>
                                                         }
@@ -270,7 +299,7 @@ class AddBarber extends React.Component {
                                                     
                                                     <div className="form-group">
                                                         <label className="control-label">Address</label>
-                                                        <textarea id="address" rows="5" className="form-control" onChange={this.handleChange} placeholder="Street name, Building Number, Residence, Region, State"></textarea>
+                                                        <textarea id="address" value={ this.state.address } rows="5" className="form-control" onChange={this.handleChange} placeholder="Street name, Building Number, Residence, Region, State"></textarea>
                                                     </div>
 
                                                 </div>
@@ -300,13 +329,15 @@ const mapStateToProps = (state) => {
         fetching: state.barber.fetching,
         fetched: state.barber.fetched,
         message: state.barber.message,
-        error: state.barber.error
+        error: state.barber.error,
+        data: state.barber.barber.data
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        saveBarber: data => dispatch(saveBarber(data))
+        updateBarber: (id, data) => dispatch(updateBarber(id, data)),
+        getBarber: id => dispatch(getBarber(id))
     }
 }
 
