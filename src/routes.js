@@ -19,6 +19,7 @@ import EditCoupon from "./views/coupon/EditCoupon";
 import User from "./views/user/User";
 import AddUser from "./views/user/AddUser";
 import EditUser from "./views/user/EditUser";
+import ViewUser from "./views/user/ViewUser";
 
 export default [
   {
@@ -99,5 +100,10 @@ export default [
     path: "/user/edit/:id",
     layout: DefaultLayout,
     component: EditUser,
+  },
+  {
+    path: "/user/view/:id",
+    layout: DefaultLayout,
+    component: ViewUser,
   }
 ];
