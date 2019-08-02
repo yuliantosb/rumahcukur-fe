@@ -245,3 +245,6 @@ button:focus {
     white-space: nowrap;
   }
   
+  .is-invalid-select > div {
+    border-color: #c4183c !important;
+}

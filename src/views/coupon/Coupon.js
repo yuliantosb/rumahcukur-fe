@@ -9,6 +9,9 @@ import { withToastManager } from 'react-toast-notifications';
 import { fetchCoupon, deleteCoupon } from '../../store/actions/couponAction';
 import Loading from 'react-loading-bar';
 import {connect} from 'react-redux';
+import moment from 'moment';
+import Table from '../../components/common/Table';
+import ReactTooltip from 'react-tooltip';
 
 class Coupon extends React.Component {
 
@@ -20,7 +23,11 @@ class Coupon extends React.Component {
 		alert: true,
 		alertMsgBox: false,
 		deleteId: null,
-		showMsgBox: false
+		showMsgBox: false,
+		ordering: {
+            type: 'name',
+            sort: 'asc'
+        }
     }
 
     handleChangeKeyword = (e) => {
@@ -78,6 +85,18 @@ class Coupon extends React.Component {
 		});
 	}
 
+	handleSorting = (e) => {
+        const type = e.target.id;
+        const sort = this.state.ordering.sort;
+        this.setState({
+			...this.state,
+            ordering: {
+                type: type,
+                sort: sort === 'asc' ? 'desc' : 'asc'
+            }
+        });
+    }
+
     componentWillUpdate(nextProps, nextState) {
         if (this.state.page !== nextState.page) {
             this.props.fetchCoupon(nextState);
@@ -85,7 +104,11 @@ class Coupon extends React.Component {
 
         if (this.state.perpage !== nextState.perpage) {
             this.props.fetchCoupon(nextState);
-        }
+		}
+		
+		if (this.state.ordering !== nextState.ordering) {
+			this.props.fetchBarber(nextState);
+		}
     }
     
     componentDidUpdate = (prevProps, prevState) => {
@@ -121,16 +144,25 @@ class Coupon extends React.Component {
 
 	render() {
 		const {payload, fetching} = this.props;
+		const {ordering} = this.state;
+        const theads = [
+            {name:'name', 'value': 'Name', sortable: true},
+            {name:'value', 'value': 'Value', sortable: true},
+            {name:'start_period', 'value': 'Start Period', sortable: true},
+            {name:'end_perios', 'value': 'End Period', sortable: true},
+            {name:'option', 'value': 'Options', sortable: false}
+		];
 		const coupons = payload.data && payload.data.data.map(coupon => {
             return (
             <tr key={coupon._id}>
                 <td>{ coupon.name }</td>
-				<td>{ coupon.email }</td>
-				<td>{ coupon.phone_number }</td>
-				<td>{ coupon.address }</td>
-				<td>
-					<Link to={`/coupon/edit/${coupon._id}`} className="btn btn-success btn-sm mx-2"><i className="mdi mdi-pencil"></i></Link>
-                    <button onClick={() => this.handleClickDelete(coupon._id) } className="btn btn-danger btn-sm"><i className="mdi mdi-delete"></i></button>
+				<td className="text-right">{ coupon.value_formatted }</td>
+				<td>{ moment(coupon.start_period).format('ll') }</td>
+				<td>{ moment(coupon.end_period).format('ll') }</td>
+				<td className="text-center">
+					<Link data-tip="Edit" to={`/coupon/edit/${coupon.id}`} className="btn btn-link text-success btn-sm px-0 mr-2"><i className="mdi mdi-pencil"></i></Link>
+                    <button data-tip="Delete" onClick={() => this.handleClickDelete(coupon.id) } className="btn btn-link text-danger btn-sm px-0"><i className="mdi mdi-delete"></i></button>
+					<ReactTooltip />
 				</td>
             </tr>
             );
@@ -200,32 +232,21 @@ class Coupon extends React.Component {
 									</div>
 								</div>
 								<div className="col-md-12 mt-3">
-									<table className="table table-bordered table-custom table-responsive">
-										<thead>
-											<tr>
-												<th>Name</th>
-                                                <th>Email</th>
-												<th>Phone</th>
-                                                <th>Address</th>
-												<th>Options</th>
-											</tr>
-										</thead>
-										<tbody>
-											{ 
-												fetching ? 
-													(
-														<tr>
-															<td className="text-center" colSpan="5">Loading...</td>
-														</tr>	
-													)
-												:
-												payload.data && payload.data.data.length > 0 ? coupons : (
-													<tr>
-														<td className="text-center" colSpan="5">Data not found</td>
-													</tr>
-												) }
-										</tbody>
-									</table>
+									<Table theads={theads} ordering={ordering} handleSorting={this.handleSorting}>
+										{ 
+											fetching ? 
+											(
+												<tr>
+													<td className="text-center" colSpan="5">Loading...</td>
+												</tr>
+											)
+											:
+											payload.data && payload.data.data.length > 0 ? coupons : (
+												<tr>
+													<td className="text-center" colSpan="5">Data not found</td>
+												</tr>
+										) }
+									</Table>
 								</div>
 
 								<div className="col-md-12 py-3">

@@ -10,7 +10,8 @@ const fetchCoupon = (filter) => {
                 params: {
                     page: filter.page,
                     perpage: filter.perpage,
-                    keyword: filter.keyword
+                    keyword: filter.keyword,
+                    ordering: filter.ordering
                 },
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem('token')}`
@@ -26,11 +27,9 @@ const saveCoupon = (data) => {
             type: 'SAVE_COUPON',
             payload: Axios.post(`${url}/coupon`, {
                 name: data.name,
-                place_of_birth: data.place_of_birth,
-                date_of_birth: moment(data.date_of_birth).format('YYYY-MM-DD'),
-                email: data.email,
-                phone_number: data.phone_number,
-                address: data.address,
+                value: data.value,
+                start_period: moment(data.start_period).format('YYYY-MM-DD'),
+                end_period: moment(data.end_period).format('YYYY-MM-DD'),
             }, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem('token')}`
@@ -59,11 +58,9 @@ const updateCoupon = (id, data) => {
             type: 'SAVE_COUPON',
             payload: Axios.put(`${url}/coupon/${id}`, {
                 name: data.name,
-                place_of_birth: data.place_of_birth,
-                date_of_birth: moment(data.date_of_birth).format('YYYY-MM-DD'),
-                email: data.email,
-                phone_number: data.phone_number,
-                address: data.address,
+                value: data.value,
+                start_period: moment(data.start_period).format('YYYY-MM-DD'),
+                end_period: moment(data.end_period).format('YYYY-MM-DD'),
             }, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem('token')}`
