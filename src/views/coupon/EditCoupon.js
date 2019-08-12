@@ -18,7 +18,8 @@ class EditCoupon extends React.Component {
         name: '',
         value: '',
         start_period: '',
-        end_period: ''
+        end_period: '',
+        type: ''
     }
     
     handleChange = (e) => {
@@ -81,6 +82,7 @@ class EditCoupon extends React.Component {
                     value: nextProps.data.value ? nextProps.data.value : '',
                     start_period: nextProps.data.start_period ? new Date(nextProps.data.start_period) : '',
                     end_period: nextProps.data.end_period ? new Date(nextProps.data.end_period) : '',
+                    type: nextProps.data.type ? nextProps.data.type : '',
                 })
             }
         }
@@ -137,6 +139,7 @@ class EditCoupon extends React.Component {
                                                             placeholderText="mm/dd/yyyy"
                                                             selected={ this.state.start_period }
                                                             id="start_period"
+                                                            maxDate={this.state.end_period}
                                                         />
                                                         { 
                                                             error && error.data.errors.start_period && <div class="invalid-feedback">{ error.data.errors.start_period[0] }</div>
@@ -146,12 +149,27 @@ class EditCoupon extends React.Component {
                                                 </div>
 
                                                 <div className="col-md-6">
-                                                    <div className="form-group">
-                                                        <label className="control-label">Value <span className="text-danger">*</span></label>
-                                                        <NumberFormat value={this.state.value} id="value" decimalSeparator="." thousandSeparator="," className={`form-control text-right ${ error && error.data.errors.value && 'is-invalid' }`} onChange={this.handleChange} placeholder="0.0" />
-                                                        { 
-                                                            error && error.data.errors.value && <div class="invalid-feedback">{ error.data.errors.value[0] }</div>
-                                                        }
+                                                    <div className="row">
+                                                        <div className="col-md-8">
+                                                            <div className="form-group">
+                                                                <label className="control-label">Value <span className="text-danger">*</span></label>
+                                                                <NumberFormat value={this.state.value} id="value" decimalSeparator="." thousandSeparator="," className={`form-control text-right ${ error && error.data.errors.value && 'is-invalid' }`} onChange={this.handleChange} placeholder="0.0" />
+                                                                { 
+                                                                    error && error.data.errors.value && <div class="invalid-feedback">{ error.data.errors.value[0] }</div>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div className="col-md-4">
+                                                            <div className="form-group">
+                                                                <label className="control-label">Type</label>
+                                                                <select value={this.state.type} id="type" className="form-control custom-select" onChange={this.handleChange}>
+                                                                    <option value="fixed">Fixed</option>
+                                                                    <option value="percentage">Percentage</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+
                                                     </div>
 
                                                     <div className="form-group">
@@ -161,6 +179,7 @@ class EditCoupon extends React.Component {
                                                             onChange={ this.handleEndPeriodChange } 
                                                             placeholderText="mm/dd/yyyy"
                                                             selected={ this.state.end_period }
+                                                            minDate={this.state.start_period}
                                                         />
                                                         { 
                                                             error && error.data.errors.end_period && <div class="invalid-feedback">{ error.data.errors.end_period[0] }</div>

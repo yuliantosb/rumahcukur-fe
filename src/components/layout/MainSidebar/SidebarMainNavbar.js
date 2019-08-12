@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Navbar, NavbarBrand } from "shards-react";
-
+import Logo from '../../../images/logo.png';
 import { Dispatcher, Constants } from "../../../flux";
 
 class SidebarMainNavbar extends React.Component {
@@ -34,7 +34,7 @@ class SidebarMainNavbar extends React.Component {
               <img
                 id="main-logo"
                 className="main-logo-custom"
-                src={ require('../../../images/logo.png') }
+                src={ Logo }
                 alt={ setting && setting.site_name }
               />
             </div>

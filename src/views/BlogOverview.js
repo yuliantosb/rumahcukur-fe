@@ -15,7 +15,6 @@ import TransactionDone from "../components/blog/TransactionDone";
 class BlogOverview extends React.Component {
   render() {
     if (!sessionStorage.getItem('token')) return (<Redirect to="/login" />)
-    const { smallStats } = this.props;
     return (
       <Container fluid className="main-content-container px-4">
             <Helmet>

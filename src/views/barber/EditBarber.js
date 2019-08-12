@@ -11,7 +11,7 @@ import {connect} from 'react-redux';
 import Loading from 'react-loading-bar';
 import Error500 from '../Error500';
 
-class AddBarber extends React.Component {
+class EditBarber extends React.Component {
 
     state = {
         name: '',
@@ -22,11 +22,14 @@ class AddBarber extends React.Component {
         regency: '',
         district: '',
         village: '',
+        city: '',
         phone: '',
         email: '',
         status: 'actived',
 		photo: 'Choose file...',
-        id_card: 'Choose file...'
+        id_card: 'Choose file...',
+        gender: 'Male',
+        is_hijab: false
     };
     
     handleChange = (e) => {
@@ -105,6 +108,9 @@ class AddBarber extends React.Component {
                     district: nextProps.data.district ? nextProps.data.district : '',
                     village: nextProps.data.village ? nextProps.data.village : '',
                     address: nextProps.data.address ? nextProps.data.address : '',
+                    city: nextProps.data.city ? nextProps.data.city : '',
+                    gender: nextProps.data.gender ? nextProps.data.gender : '',
+                    is_hijab: nextProps.data.is_hijab ? nextProps.data.is_hijab : '',
                 })
             }
         }
@@ -127,11 +133,11 @@ class AddBarber extends React.Component {
 						showSpinner={false}
 						/>
 				<Helmet>
-					<title>Add Barber | {appName} </title>
+					<title>Edit Barber | {appName} </title>
 				</Helmet>
 				<Row noGutters className="page-header py-4">
                     <div className="col-md-8">
-					    <PageTitle sm="4" title="Add Barber" className="text-sm-left" />
+					    <PageTitle sm="4" title="Edit Barber" className="text-sm-left" />
                     </div>
                     <div className="col-md-4 text-right">
                          <Link className="btn btn-secondary" to="/barber">Back</Link>
@@ -173,28 +179,26 @@ class AddBarber extends React.Component {
                                                         </div>
                                                     </div>
 
-
-                                                    <div className="row">
-                                                        <div className="col-md-6">
-                                                            <div className="form-group">
-                                                                <label className="control-label">Latitude <span className="text-danger">*</span></label>
-                                                                <input type="text" id="latitude" value={ this.state.latitude } className={`form-control ${ error && error.data.errors.latitude && 'is-invalid' }`} onChange={this.handleChange} placeholder="Latitude" />
-                                                                { 
-                                                                    error && error.data.errors.latitude && <div class="invalid-feedback">{ error.data.errors.latitude[0] }</div>
-                                                                }
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-md-6">
-                                                            <div className="form-group">
-                                                                <label className="control-label">Longitude <span className="text-danger">*</span></label>
-                                                                <input type="text" id="longitude" value={ this.state.longitude } className={`form-control ${ error && error.data.errors.longitude && 'is-invalid' }`} onChange={this.handleChange} placeholder="Longitude" />
-                                                                { 
-                                                                    error && error.data.errors.longitude && <div class="invalid-feedback">{ error.data.errors.longitude[0] }</div>
-                                                                }
-                                                            </div>
-                                                        </div>
+                                                    <div className="form-group">
+                                                        <label className="control-label">Gender</label>
+                                                        <select id="gender" value={this.state.gender} className="form-control custom-select" onChange={this.handleChange}>
+                                                            <option value="Male">Male</option>
+                                                            <option value="Female">Female</option>
+                                                        </select>
                                                     </div>
-
+                                                    
+                                                    {
+                                                        this.state.gender === 'Female' && (
+                                                            <div className="form-group">
+                                                                <label className="control-label">Hijab</label>
+                                                                <select id="is_hijab" value={this.state.is_hijab} className="form-control custom-select" onChange={this.handleChange}>
+                                                                    <option value="0">No</option>
+                                                                    <option value="1">Yes</option>
+                                                                </select>
+                                                            </div>
+                                                        )
+                                                    }
+                                                    
                                                     
                                                     <div className="form-group">
                                                         <label className="control-label">Photo</label>
@@ -246,8 +250,11 @@ class AddBarber extends React.Component {
                                                     </div>
 
 
+                                                </div>
 
-                                                    <div className="form-group">
+
+                                                <div className="col-md-6">
+                                                     <div className="form-group">
                                                         <label className="control-label">Status <span className="text-danger">*</span></label>
                                                         <select id="status" value={ this.state.status } className={`form-control custom-select ${ error && error.data.errors.status && 'is-invalid' }`} onChange={this.handleChange}>
                                                                 <option value="actived">Actived</option>
@@ -260,11 +267,6 @@ class AddBarber extends React.Component {
                                                         }
                                                     </div>
 
-                                                </div>
-
-
-                                                <div className="col-md-6">
-
                                                     <div className="form-group">
                                                         <label className="control-label">Province <span className="text-danger">*</span></label>
                                                         <input type="text" id="province" value={ this.state.province } className={`form-control ${ error && error.data.errors.province && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: DKI Jakarta" />
@@ -274,26 +276,10 @@ class AddBarber extends React.Component {
                                                     </div>
 
                                                     <div className="form-group">
-                                                        <label className="control-label">Regency <span className="text-danger">*</span></label>
-                                                        <input type="text" id="regency" value={ this.state.regency } className={`form-control ${ error && error.data.errors.regency && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: Jakarta Selatan" />
+                                                        <label className="control-label">City <span className="text-danger">*</span></label>
+                                                        <input type="text" id="city" value={ this.state.city } className={`form-control ${ error && error.data.errors.city && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: Jakarta Selatan" />
                                                         { 
-                                                            error && error.data.errors.regency && <div class="invalid-feedback">{ error.data.errors.regency[0] }</div>
-                                                        }
-                                                    </div>
-                                                    
-                                                    <div className="form-group">
-                                                        <label className="control-label">District <span className="text-danger">*</span></label>
-                                                        <input type="text" id="district" value={ this.state.district } className={`form-control ${ error && error.data.errors.district && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: Palmerah" />
-                                                        { 
-                                                            error && error.data.errors.district && <div class="invalid-feedback">{ error.data.errors.district[0] }</div>
-                                                        }
-                                                    </div>
-
-                                                    <div className="form-group">
-                                                        <label className="control-label">Village <span className="text-danger">*</span></label>
-                                                        <input type="text" id="village" value={ this.state.village } className={`form-control ${ error && error.data.errors.village && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: Slipi" />
-                                                        { 
-                                                            error && error.data.errors.village && <div class="invalid-feedback">{ error.data.errors.village[0] }</div>
+                                                            error && error.data.errors.city && <div class="invalid-feedback">{ error.data.errors.city[0] }</div>
                                                         }
                                                     </div>
                                                     
@@ -305,7 +291,7 @@ class AddBarber extends React.Component {
                                                 </div>
                                                 <div className="col-md-12 text-right">
                                                     <hr/>
-                                                    <button className="btn btn-secondary" type="submit" onClick={this.handleClickToast}>Save</button>
+                                                    <button className="btn btn-secondary" type="submit" onClick={this.handleClickToast}>Save Changes</button>
                                                     <button className="btn btn-default" type="reset">Reset</button>
                                                 </div>
                                             </div>
@@ -341,4 +327,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withToastManager(AddBarber));
+export default connect(mapStateToProps, mapDispatchToProps)(withToastManager(EditBarber));

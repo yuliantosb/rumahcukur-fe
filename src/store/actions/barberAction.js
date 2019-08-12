@@ -1,5 +1,4 @@
 import Axios from "axios";
-import moment from "moment";
 import { url } from "../../global";
 
 const fetchBarber = (filter) => {
@@ -34,13 +33,16 @@ const saveBarber = (data) => {
                 regency: data.regency,
                 district: data.district,
                 village: data.village,
+                city: data.city,
                 phone: data.phone,
                 email: data.email,
                 status: data.status,
                 photo: data.photo,
                 photo_file: data.photo_file,
                 id_card: data.id_card,
-                id_card_file: data.id_card_file
+                id_card_file: data.id_card_file,
+                gender: data.gender,
+                is_hijab: data.is_hijab
             }, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem('token')}`
@@ -76,13 +78,16 @@ const updateBarber = (id, data) => {
                 regency: data.regency,
                 district: data.district,
                 village: data.village,
+                city: data.city,
                 phone: data.phone,
                 email: data.email,
                 status: data.status,
                 photo: data.photo,
                 photo_file: data.photo_file,
                 id_card: data.id_card,
-                id_card_file: data.id_card_file
+                id_card_file: data.id_card_file,
+                gender: data.gender,
+                is_hijab: data.is_hijab
             }, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem('token')}`

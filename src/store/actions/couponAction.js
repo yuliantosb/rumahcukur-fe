@@ -30,6 +30,7 @@ const saveCoupon = (data) => {
                 value: data.value,
                 start_period: moment(data.start_period).format('YYYY-MM-DD'),
                 end_period: moment(data.end_period).format('YYYY-MM-DD'),
+                type: data.type
             }, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem('token')}`
@@ -61,6 +62,7 @@ const updateCoupon = (id, data) => {
                 value: data.value,
                 start_period: moment(data.start_period).format('YYYY-MM-DD'),
                 end_period: moment(data.end_period).format('YYYY-MM-DD'),
+                type: data.type
             }, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem('token')}`

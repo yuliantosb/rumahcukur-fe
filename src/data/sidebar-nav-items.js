@@ -12,6 +12,11 @@ export default function() {
       htmlBefore: '<i class="mdi mdi-content-cut"></i>'
     },
     {
+      title: "Price Set",
+      to: "/price",
+      htmlBefore: '<i class="mdi mdi-cash"></i>'
+    },
+    {
       title: "Coupon",
       to: "/coupon",
       htmlBefore: '<i class="mdi mdi-ticket-percent"></i>'

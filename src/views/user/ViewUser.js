@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Row, Col, Card, CardHeader, ListGroup, ListGroupItem, Form, FormInput } from 'shards-react';
+import { Container, Row, Col, Card, CardHeader, ListGroup, ListGroupItem, Form } from 'shards-react';
 import PageTitle from '../../components/common/PageTitle';
 import { appName } from '../../global';
 import { Helmet } from 'react-helmet';

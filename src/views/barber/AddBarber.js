@@ -22,11 +22,14 @@ class AddBarber extends React.Component {
         regency: '',
         district: '',
         village: '',
+        city: '',
         phone: '',
         email: '',
         status: 'actived',
 		photo: 'Choose file...',
-        id_card: 'Choose file...'
+        id_card: 'Choose file...',
+        gender: 'Male',
+        is_hijab: false
     };
     
     handleChange = (e) => {
@@ -146,29 +149,26 @@ class AddBarber extends React.Component {
                                                         </div>
                                                     </div>
 
-
-                                                    <div className="row">
-                                                        <div className="col-md-6">
-                                                            <div className="form-group">
-                                                                <label className="control-label">Latitude <span className="text-danger">*</span></label>
-                                                                <input type="text" id="latitude" className={`form-control ${ error && error.data.errors.latitude && 'is-invalid' }`} onChange={this.handleChange} placeholder="Latitude" />
-                                                                { 
-                                                                    error && error.data.errors.latitude && <div class="invalid-feedback">{ error.data.errors.latitude[0] }</div>
-                                                                }
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-md-6">
-                                                            <div className="form-group">
-                                                                <label className="control-label">Longitude <span className="text-danger">*</span></label>
-                                                                <input type="text" id="longitude" className={`form-control ${ error && error.data.errors.longitude && 'is-invalid' }`} onChange={this.handleChange} placeholder="Longitude" />
-                                                                { 
-                                                                    error && error.data.errors.longitude && <div class="invalid-feedback">{ error.data.errors.longitude[0] }</div>
-                                                                }
-                                                            </div>
-                                                        </div>
+                                                    <div className="form-group">
+                                                        <label className="control-label">Gender</label>
+                                                        <select id="gender" className="form-control custom-select" onChange={this.handleChange}>
+                                                            <option value="Male">Male</option>
+                                                            <option value="Female">Female</option>
+                                                        </select>
                                                     </div>
-
                                                     
+                                                    {
+                                                        this.state.gender === 'Female' && (
+                                                            <div className="form-group">
+                                                                <label className="control-label">Hijab</label>
+                                                                <select id="is_hijab" className="form-control custom-select" onChange={this.handleChange}>
+                                                                    <option value="0">No</option>
+                                                                    <option value="1">Yes</option>
+                                                                </select>
+                                                            </div>
+                                                        )
+                                                    }
+
                                                     <div className="form-group">
                                                         <label className="control-label">Photo</label>
                                                         <div className="custom-file">
@@ -217,7 +217,12 @@ class AddBarber extends React.Component {
                                                             error && error.data.errors.id_card_file && <small class="text-danger font-weight-bold help-block">{ error.data.errors.id_card_file[0] }</small>
                                                         }
                                                     </div>
-                                                
+
+                                                </div>
+
+
+                                                <div className="col-md-6">
+                                                    
                                                     <div className="form-group">
                                                         <label className="control-label">Status <span className="text-danger">*</span></label>
                                                         <select id="status" className={`form-control custom-select ${ error && error.data.errors.status && 'is-invalid' }`} onChange={this.handleChange}>
@@ -231,11 +236,6 @@ class AddBarber extends React.Component {
                                                         }
                                                     </div>
 
-                                                </div>
-
-
-                                                <div className="col-md-6">
-
                                                     <div className="form-group">
                                                         <label className="control-label">Province <span className="text-danger">*</span></label>
                                                         <input type="text" id="province" className={`form-control ${ error && error.data.errors.province && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: DKI Jakarta" />
@@ -245,26 +245,10 @@ class AddBarber extends React.Component {
                                                     </div>
 
                                                     <div className="form-group">
-                                                        <label className="control-label">Regency <span className="text-danger">*</span></label>
-                                                        <input type="text" id="regency" className={`form-control ${ error && error.data.errors.regency && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: Jakarta Selatan" />
+                                                        <label className="control-label">City <span className="text-danger">*</span></label>
+                                                        <input type="text" id="city" className={`form-control ${ error && error.data.errors.city && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: Jakarta Selatan" />
                                                         { 
-                                                            error && error.data.errors.regency && <div class="invalid-feedback">{ error.data.errors.regency[0] }</div>
-                                                        }
-                                                    </div>
-                                                    
-                                                    <div className="form-group">
-                                                        <label className="control-label">District <span className="text-danger">*</span></label>
-                                                        <input type="text" id="district" className={`form-control ${ error && error.data.errors.district && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: Palmerah" />
-                                                        { 
-                                                            error && error.data.errors.district && <div class="invalid-feedback">{ error.data.errors.district[0] }</div>
-                                                        }
-                                                    </div>
-
-                                                    <div className="form-group">
-                                                        <label className="control-label">Village <span className="text-danger">*</span></label>
-                                                        <input type="text" id="village" className={`form-control ${ error && error.data.errors.village && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: Slipi" />
-                                                        { 
-                                                            error && error.data.errors.village && <div class="invalid-feedback">{ error.data.errors.village[0] }</div>
+                                                            error && error.data.errors.city && <div class="invalid-feedback">{ error.data.errors.city[0] }</div>
                                                         }
                                                     </div>
                                                     

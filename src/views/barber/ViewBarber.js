@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Row, Col, Card, CardHeader, ListGroup, ListGroupItem, Form, FormInput } from 'shards-react';
+import { Container, Row, Col, Card, CardHeader, ListGroup, ListGroupItem, Form } from 'shards-react';
 import PageTitle from '../../components/common/PageTitle';
 import { appName } from '../../global';
 import { Helmet } from 'react-helmet';
@@ -91,16 +91,12 @@ class ViewBarber extends React.Component {
                                                         <p className="help-block">{ data && data.province }</p>
                                                     </Col>
                                                     <Col md="6" className="form-group">
-                                                        <label htmlFor="feFirstName">Regency</label>
-                                                        <p className="help-block">{ data && data.regency }</p>
+                                                        <label htmlFor="feFirstName">City</label>
+                                                        <p className="help-block">{ data && data.city }</p>
                                                     </Col>
                                                     <Col md="6" className="form-group">
-                                                        <label htmlFor="feFirstName">District</label>
-                                                        <p className="help-block">{ data && data.district }</p>
-                                                    </Col>
-                                                    <Col md="6" className="form-group">
-                                                        <label htmlFor="feFirstName">Village</label>
-                                                        <p className="help-block">{ data && data.village }</p>
+                                                        <label htmlFor="feFirstName">Gender</label>
+                                                        <p className="help-block">{ data && data.gender } { data && data.gender === 'Female' ? data && data.is_hijab ? 'Hijab' : 'Non Hijab' : '' }</p>
                                                     </Col>
                                                     <Col md="6" className="form-group">
                                                         <label htmlFor="feFirstName">Address</label>
