@@ -52,8 +52,8 @@ class Login extends React.Component {
                                     </div> ) }
                                     <form onSubmit={this.handleLoginSubmit}>
                                         <div className="form-group">
-                                            <label htmlFor="email">Email address or phone number</label>
-                                            <input type="text" className="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email or phone number" onChange={this.handleChangeCreds} />
+                                            <label htmlFor="email">Email, username or phone number</label>
+                                            <input type="text" className="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter, username or phone number" onChange={this.handleChangeCreds} />
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="password">Password</label>

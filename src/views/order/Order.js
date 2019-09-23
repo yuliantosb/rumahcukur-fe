@@ -1,21 +1,20 @@
 import React from 'react';
-import { Container, Row, Col, Card, CardBody } from 'shards-react';
+import { Container, Row, Col, Card, CardBody, DatePicker } from 'shards-react';
 import PageTitle from '../../components/common/PageTitle';
 import { Redirect, Link } from 'react-router-dom';
 import { appName } from '../../global';
 import { Helmet } from 'react-helmet';
 import ScrollToTop from '../../components/layout/ScrollToTop';
 import { withToastManager } from 'react-toast-notifications';
-import { fetchCoupon, deleteCoupon } from '../../store/actions/couponAction';
+import { fetchOrder, deleteOrder } from '../../store/actions/orderAction';
 import Loading from 'react-loading-bar';
 import {connect} from 'react-redux';
-import moment from 'moment';
 import Table from '../../components/common/Table';
 import ReactTooltip from 'react-tooltip';
 import Error500 from '../Error500';
 import Error403 from '../Error403';
 
-class Coupon extends React.Component {
+class Order extends React.Component {
 
 	state = {
         search: null,
@@ -27,9 +26,11 @@ class Coupon extends React.Component {
 		deleteId: null,
 		showMsgBox: false,
 		ordering: {
-            type: 'name',
+            type: 'user_name',
             sort: 'asc'
-        }
+        },
+        date_from: new Date(),
+        date_to: new Date()
     }
 
     handleChangeKeyword = (e) => {
@@ -41,7 +42,7 @@ class Coupon extends React.Component {
 
 	handleSubmitKeyword = (e) => {
 		e.preventDefault();
-		this.props.fetchCoupon(this.state);
+		this.props.fetchOrder(this.state);
 	}
 
 	handleClickPage = (e) => {
@@ -57,6 +58,22 @@ class Coupon extends React.Component {
             perpage: e.target.value
         });
     }
+
+    handleChangeDateFrom = (e) => {
+
+        this.setState({
+            ...this.state,
+            date_from: new Date(e)
+        })
+    }
+
+    handleChangeDateTo = (e) => {
+        this.setState({
+            ...this.state,
+            date_to: new Date(e)
+        })
+    }
+
     
     handleClickDelete = (id) => {
 		
@@ -76,7 +93,7 @@ class Coupon extends React.Component {
 		});
 
 
-		this.props.deleteCoupon(this.state.deleteId);
+		this.props.deleteOrder(this.state.deleteId);
 	}
 
 	handleClickNo = () => {
@@ -101,15 +118,23 @@ class Coupon extends React.Component {
 
     componentWillUpdate(nextProps, nextState) {
         if (this.state.page !== nextState.page) {
-            this.props.fetchCoupon(nextState);
+            this.props.fetchOrder(nextState);
         }
 
         if (this.state.perpage !== nextState.perpage) {
-            this.props.fetchCoupon(nextState);
+            this.props.fetchOrder(nextState);
 		}
 		
 		if (this.state.ordering !== nextState.ordering) {
-			this.props.fetchCoupon(nextState);
+			this.props.fetchOrder(nextState);
+        }
+        
+        if (this.state.date_from !== nextState.date_from) {
+			this.props.fetchOrder(nextState);
+        }
+        
+        if (this.state.date_to !== nextState.date_to) {
+			this.props.fetchOrder(nextState);
 		}
     }
     
@@ -134,41 +159,47 @@ class Coupon extends React.Component {
 					appearance: 'success',
 					autoDismiss: true
 				});
-				this.props.fetchCoupon(this.state);
+				this.props.fetchOrder(this.state);
 			}
 		}
 
     }
 
     componentDidMount = () => {
-        this.props.fetchCoupon(this.state)
+        this.props.fetchOrder(this.state)
     }	
 
 	render() {
 		const {payload, fetching, error} = this.props;
 		if (!sessionStorage.getItem('token')) return <Redirect to="/login" />
-        if (error && error.status === 500) return <Error500 message={error.data.message} />
-        if (error && error.status === 403) return <Error403 message={error.data.message} />
+		if (error && error.status === 500) return <Error500 message={error.data.message} />
+		if (error && error.status === 403) return <Error403 message={error.data.message} />
+		
 		const {ordering} = this.state;
         const theads = [
-            {name:'name', 'value': 'Name', sortable: true},
-            {name:'value', 'value': 'Value', sortable: true},
-            {name:'start_period', 'value': 'Start Period', sortable: true},
-            {name:'end_perios', 'value': 'End Period', sortable: true},
-            {name:'option', 'value': 'Options', sortable: false}
+            {name:'user_name', 'value': 'Name', sortable: true},
+            {name:'partner_name', 'value': 'Barber', sortable: true},
+            {name:'coupon_name', 'value': 'Coupon', sortable: true},
+            {name:'distance', 'value': 'Distance', sortable: true},
+            {name:'haircut_price', 'value': 'Haircut Price', sortable: true},
+            {name:'price_per_km', 'value': 'Distance Price', sortable: true},
+            {name:'coupon', 'value': 'Discount', sortable: true},
+            {name:'total_price', 'value': 'Total', sortable: true},
+            {name:'status', 'value': 'Status', sortable: true},
 		];
-		const coupons = payload.data && payload.data.data.map(coupon => {
+		
+		const orders = payload.data && payload.data.data.map(order => {
             return (
-            <tr key={coupon.id}>
-                <td>{ coupon.name }</td>
-				<td className="text-right">{ coupon.value_formatted }</td>
-				<td>{ moment(coupon.start_period).format('ll') }</td>
-				<td>{ moment(coupon.end_period).format('ll') }</td>
-				<td className="text-center">
-					<Link data-tip="Edit" to={`/coupon/edit/${coupon.id}`} className="btn btn-link text-success btn-sm px-0 mr-2"><i className="mdi mdi-pencil"></i></Link>
-                    <button data-tip="Delete" onClick={() => this.handleClickDelete(coupon.id) } className="btn btn-link text-danger btn-sm px-0"><i className="mdi mdi-delete"></i></button>
-					<ReactTooltip />
-				</td>
+            <tr key={order.id}>
+                <td>{ order.user && order.user.name }</td>
+				<td>{ order.partner && order.partner.name }</td>
+				<td>{ order.coupon && order.coupon.name }</td>
+				<td>{ order.distance_formatted }</td>
+				<td className="text-right">{ order.haircut_price_formatted }</td>
+				<td className="text-right">{ order.price_per_km_formatted }</td>
+				<td className="text-right">{ order.coupon_formatted }</td>
+				<td className="text-right">{ order.total_price_formatted }</td>
+				<td>{ order.status }</td>
             </tr>
             );
 		});
@@ -181,10 +212,10 @@ class Coupon extends React.Component {
 						showSpinner={false}
 						/>
 				<Helmet>
-					<title>Coupon | {appName} </title>
+					<title>Statement | {appName} </title>
 				</Helmet>
 				<Row noGutters className="page-header py-4">
-					<PageTitle sm="4" title="Coupon" className="text-sm-left" />
+					<PageTitle sm="4" title="Statement" className="text-sm-left" />
 				</Row>
 				<Row>
 					{
@@ -206,9 +237,20 @@ class Coupon extends React.Component {
 								<div className="col-md-12 mt-4">
 									<div className="row">
                                         <div className="col-md-8">
-                                            <Link to="/coupon/create" className="btn btn-secondary mr-2">
-                                                <i className="mdi mdi-plus" /> Add
-                                            </Link>
+                                            <div className="row">
+                                                <div className="col-md-6">
+                                                    <div className="form-group">
+                                                        <label className="control-label">Date From</label>
+                                                        <DatePicker placeholder="mm/dd/yyyy" selected={this.state.date_from} onChange={this.handleChangeDateFrom} />
+                                                    </div>
+                                                </div>
+                                                <div className="col-md-6">
+                                                    <div className="form-group">
+                                                        <label className="control-label">Date To</label>
+                                                        <DatePicker placeholder="mm/dd/yyyy" selected={this.state.date_to} onChange={this.handleChangeDateTo} />
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
 										<div className="col-md-4 text-right">
 											<form onSubmit={this.handleSubmitKeyword}>
@@ -242,13 +284,13 @@ class Coupon extends React.Component {
 											fetching ? 
 											(
 												<tr>
-													<td className="text-center" colSpan="5">Loading...</td>
+													<td className="text-center" colSpan="9">Loading...</td>
 												</tr>
 											)
 											:
-											payload.data && payload.data.data.length > 0 ? coupons : (
+											payload.data && payload.data.data.length > 0 ? orders : (
 												<tr>
-													<td className="text-center" colSpan="5">Data not found</td>
+													<td className="text-center" colSpan="9">Data not found</td>
 												</tr>
 										) }
 									</Table>
@@ -318,19 +360,19 @@ class Coupon extends React.Component {
 const mapStateToProps = (state) => {
     return {
         ...state,
-        payload: state.coupon.payload,
-        error: state.coupon.error,
-		fetching: state.coupon.fetching,
-		message: state.coupon.message,
-		isDeleted: state.coupon.isDeleted
+        payload: state.order.payload,
+        error: state.order.error,
+		fetching: state.order.fetching,
+		message: state.order.message,
+		isDeleted: state.order.isDeleted
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		fetchCoupon: (filter) => dispatch(fetchCoupon(filter)),
-		deleteCoupon: (id) => dispatch(deleteCoupon(id))
+		fetchOrder: (filter) => dispatch(fetchOrder(filter)),
+		deleteOrder: (id) => dispatch(deleteOrder(id))
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withToastManager(Coupon));
+export default connect(mapStateToProps, mapDispatchToProps)(withToastManager(Order));

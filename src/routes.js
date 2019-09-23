@@ -20,6 +20,14 @@ import User from "./views/user/User";
 import AddUser from "./views/user/AddUser";
 import EditUser from "./views/user/EditUser";
 import ViewUser from "./views/user/ViewUser";
+import Price from "./views/price/Price";
+import Role from "./views/role/Role";
+import AddRole from "./views/role/AddRole";
+import EditRole from "./views/role/EditRole";
+import Permission from "./views/permission/Permission";
+import AddPermission from "./views/permission/AddPermission";
+import EditPermission from "./views/permission/EditPermission";
+import Order from "./views/order/Order";
 
 export default [
   {
@@ -105,5 +113,52 @@ export default [
     path: "/user/view/:id",
     layout: DefaultLayout,
     component: ViewUser,
-  }
+  },
+  {
+    path: "/price",
+    layout: DefaultLayout,
+    component: Price,
+  },
+  {
+    path: "/role",
+    layout: DefaultLayout,
+    component: Role,
+    exact: true
+  },
+  {
+    path: "/role/create",
+    layout: DefaultLayout,
+    component: AddRole,
+    exact: true
+  },
+  {
+    path: "/role/edit/:id",
+    layout: DefaultLayout,
+    component: EditRole,
+    exact: true
+  },
+  {
+    path: "/permission",
+    layout: DefaultLayout,
+    component: Permission,
+    exact: true
+  },
+  {
+    path: "/permission/create",
+    layout: DefaultLayout,
+    component: AddPermission,
+    exact: true
+  },
+  {
+    path: "/permission/edit/:id",
+    layout: DefaultLayout,
+    component: EditPermission,
+    exact: true
+  },
+  {
+    path: "/statement",
+    layout: DefaultLayout,
+    component: Order,
+    exact: true
+  },
 ];

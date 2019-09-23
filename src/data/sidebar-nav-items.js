@@ -36,10 +36,6 @@ export default function() {
       htmlBefore: '<i class="mdi mdi-settings"></i>',
       children: [
         {
-          title: 'Site Settings',
-          to: '/settings'
-        },
-        {
           title: 'Role',
           to: '/role'
         },

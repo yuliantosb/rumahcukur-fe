@@ -5,18 +5,18 @@ const initState = {
 	payload: {},
 	saved: false,
 	message: null,
-	user: {},
+	permission: {},
 	isDeleted: false,
 };
 
-const userReducer = (state = initState, action) => {
+const permissionReducer = (state = initState, action) => {
 	switch (action.type) {
-		case 'USER_PENDING':
+		case 'PERMISSION_PENDING':
 			return {
 				...state,
 				fetching: true
 			};
-		case 'USER_REJECTED':
+		case 'PERMISSION_REJECTED':
 			
 			if (action.payload.response.status === 401) {
 				sessionStorage.removeItem('token');
@@ -27,7 +27,7 @@ const userReducer = (state = initState, action) => {
 				error: action.payload.response,
 				fetching: false
 			};
-		case 'USER_FULFILLED':
+		case 'PERMISSION_FULFILLED':
 			return {
 				...state,
 				fetching: false,
@@ -37,12 +37,12 @@ const userReducer = (state = initState, action) => {
 				saved: false,
 				isDeleted: false
 			};
-		case 'SAVE_USER_PENDING' : 
+		case 'SAVE_PERMISSION_PENDING' : 
 			return {
 				...state,
 				fetching: true
 			};
-		case 'SAVE_USER_REJECTED' :
+		case 'SAVE_PERMISSION_REJECTED' :
 			if (action.payload.response.status === 401) {
 				sessionStorage.removeItem('token');
 			}
@@ -53,7 +53,7 @@ const userReducer = (state = initState, action) => {
 				fetching: false,
 				fetched: false
 			};
-		case 'SAVE_USER_FULFILLED':
+		case 'SAVE_PERMISSION_FULFILLED':
 			return {
 				...state,
 				fetching: false,
@@ -62,12 +62,12 @@ const userReducer = (state = initState, action) => {
 				error: null,
 				saved: true
 			};
-		case 'GET_USER_PENDING':
+		case 'GET_PERMISSION_PENDING':
 			return {
 				...state,
 				fetching: true
 			};
-		case 'GET_USER_REJECTED':
+		case 'GET_PERMISSION_REJECTED':
 			
 			if (action.payload.response.status === 401) {
 				sessionStorage.removeItem('token');
@@ -78,21 +78,21 @@ const userReducer = (state = initState, action) => {
 				error: action.payload.response,
 				fetching: false
 			};
-		case 'GET_USER_FULFILLED':
+		case 'GET_PERMISSION_FULFILLED':
 			return {
 				...state,
 				fetching: false,
 				fetched: true,
-				user: action.payload.data,
+				permission: action.payload.data,
 				error: null,
 				saved: false,
 			};
-		case 'UPDATE_USER_PENDING' : 
+		case 'UPDATE_PERMISSION_PENDING' : 
 			return {
 				...state,
 				fetching: true
 			};
-		case 'UPDATE_USER_REJECTED' :
+		case 'UPDATE_PERMISSION_REJECTED' :
 			if (action.payload.response.status === 401) {
 				sessionStorage.removeItem('token');
 			}
@@ -103,7 +103,7 @@ const userReducer = (state = initState, action) => {
 				fetching: false,
 				fetched: false
 			};
-		case 'UPDATE_USER_FULFILLED':
+		case 'UPDATE_PERMISSION_FULFILLED':
 			return {
 				...state,
 				fetching: false,
@@ -112,12 +112,12 @@ const userReducer = (state = initState, action) => {
 				error: null,
 				saved: true
 			};
-		case 'DELETE_USER_PENDING' : 
+		case 'DELETE_PERMISSION_PENDING' : 
 			return {
 				...state,
 				fetching: true
 			};
-		case 'DELETE_USER_REJECTED' :
+		case 'DELETE_PERMISSION_REJECTED' :
 			if (action.payload.response.status === 401) {
 				sessionStorage.removeItem('token');
 			}
@@ -127,7 +127,7 @@ const userReducer = (state = initState, action) => {
 				error: action.payload.response,
 				fetching: false
 			};
-		case 'DELETE_USER_FULFILLED':
+		case 'DELETE_PERMISSION_FULFILLED':
 			return {
 				...state,
 				fetching: false,
@@ -141,4 +141,4 @@ const userReducer = (state = initState, action) => {
 	}
 };
 
-export default userReducer;
+export default permissionReducer;

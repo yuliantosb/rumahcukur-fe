@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Row, Col, Card, CardBody } from 'shards-react';
 import PageTitle from '../../components/common/PageTitle';
-import { Link } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import { appName } from '../../global';
 import { Helmet } from 'react-helmet';
 import ScrollToTop from '../../components/layout/ScrollToTop';
@@ -11,6 +11,8 @@ import Loading from 'react-loading-bar';
 import {connect} from 'react-redux';
 import Table from '../../components/common/Table';
 import ReactTooltip from 'react-tooltip';
+import Error500 from '../Error500';
+import Error403 from '../Error403';
 
 class Barber extends React.Component {
 
@@ -142,7 +144,11 @@ class Barber extends React.Component {
     }	
 
 	render() {
-		const {payload, fetching} = this.props;
+		const {payload, fetching, error} = this.props;
+		if (!sessionStorage.getItem('token')) return <Redirect to="/login" />
+		if (error && error.status === 500) return <Error500 message={error.data.message} />
+		if (error && error.status === 403) return <Error403 message={error.data.message} />
+		
 		const {ordering} = this.state;
         const theads = [
             {name:'name', 'value': 'Name', sortable: true},

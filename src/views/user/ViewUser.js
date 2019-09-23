@@ -1,6 +1,7 @@
 import React from 'react';
 import { Container, Row, Col, Card, CardHeader, ListGroup, ListGroupItem, Form } from 'shards-react';
 import PageTitle from '../../components/common/PageTitle';
+import '../../assets/range-date-picker.css';
 import { appName } from '../../global';
 import { Helmet } from 'react-helmet';
 import { Link, Redirect } from 'react-router-dom';
@@ -9,6 +10,8 @@ import {connect} from 'react-redux';
 import Loading from 'react-loading-bar';
 import { getUser } from '../../store/actions/userAction';
 import moment from 'moment';
+import Error500 from '../Error500';
+import Error403 from '../Error403';
 
 class ViewUser extends React.Component {
 
@@ -17,9 +20,11 @@ class ViewUser extends React.Component {
     }
     
 	render() {      
-        const { fetching, data } = this.props;
+        const { fetching, data, error } = this.props;
         if (!sessionStorage.getItem('token')) return <Redirect to="/login" />
-		return (
+        if (error && error.status === 500) return <Error500 message={error.data.message} />
+        if (error && error.status === 403) return <Error403 message={error.data.message} />
+        return (
          
 			<Container fluid className="main-content-container px-4">
                 <Loading
@@ -46,14 +51,16 @@ class ViewUser extends React.Component {
                             <div className="mb-3 mx-auto">
                                 <img
                                 className="rounded-circle"
-                                src={ data && data.photo_url }
+                                src={ data && data.picture_url }
                                 alt={ data && data.name }
                                 width="110"
                                 style={{ width:110, height:110, objectFit: 'cover' }}
                                 />
                             </div>
                             <h4 className="mb-0">{ data && data.name }</h4>
-                            <h6 className="text-secondary">{ data && data.role && data.role.name }</h6>
+                            <h6 className="text-secondary">{ data && data.username }</h6>
+                            <small className="text-muted">{ data && data.place_of_birth }, { data && moment(data.date_of_birth).format('LL') } ({ data && data.age })</small>
+                            <span className="text-muted d-block mb-2">{ data && data.role.name }</span>
                             </CardHeader>
                         </Card>
 					</Col>
@@ -74,24 +81,40 @@ class ViewUser extends React.Component {
                                                         <p className="help-block">{ data && data.name }</p>
                                                     </Col>
                                                     <Col md="6" className="form-group">
+                                                        <label htmlFor="feFirstName">Username</label>
+                                                        <p className="help-block">{ data && data.username }</p>
+                                                    </Col>
+                                                    <Col md="6" className="form-group">
                                                         <label htmlFor="feFirstName">Email</label>
                                                         <p className="help-block">{ data && data.email }</p>
                                                     </Col>
                                                     <Col md="6" className="form-group">
-                                                        <label htmlFor="feFirstName">Phone Number</label>
+                                                        <label htmlFor="feFirstName">Phone number</label>
                                                         <p className="help-block">{ data && data.phone_number }</p>
                                                     </Col>
                                                     <Col md="6" className="form-group">
-                                                        <label htmlFor="feFirstName">Place Of Birth</label>
+                                                        <label htmlFor="feFirstName">POB</label>
                                                         <p className="help-block">{ data && data.place_of_birth }</p>
                                                     </Col>
                                                     <Col md="6" className="form-group">
-                                                        <label htmlFor="feFirstName">Date of Birth</label>
-                                                        <p className="help-block">{ data && moment(data.date_of_birth).format('ll') }</p>
+                                                        <label htmlFor="feFirstName">DOB</label>
+                                                        <p className="help-block">{ data && moment(data.date_of_birth).format('LL') }</p>
+                                                    </Col>
+                                                    <Col md="6" className="form-group">
+                                                        <label htmlFor="feFirstName">Partner</label>
+                                                        <p className="help-block">{ data && data.partner && data.partner.name }</p>
+                                                    </Col>
+                                                    <Col md="6" className="form-group">
+                                                        <label htmlFor="feFirstName">Role</label>
+                                                        <p className="help-block">{ data && data.role && data.role.name }</p>
                                                     </Col>
                                                     <Col md="6" className="form-group">
                                                         <label htmlFor="feFirstName">Gender</label>
                                                         <p className="help-block">{ data && data.gender }</p>
+                                                    </Col>
+                                                    <Col md="6" className="form-group">
+                                                        <label htmlFor="feFirstName">Address</label>
+                                                        <p className="help-block">{ data && data.address }</p>
                                                     </Col>
                                                 </Row>
                                             </Form>

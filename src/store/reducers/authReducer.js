@@ -21,12 +21,13 @@ const authReducer = (state = initState, action) => {
         case 'LOGIN_FULFILLED':
             sessionStorage.setItem('token', action.payload.data.token);
             sessionStorage.setItem('name', action.payload.data.user.name);
-            sessionStorage.setItem('photo', action.payload.data.user.photo_url);
+            sessionStorage.setItem('photo', action.payload.data.user.picture_url);
             return {
                 ...state,
                 fetching: false,
                 fetched: true,
                 payload: action.payload,
+                error: null,
             }
         case 'LOGOUT_PENDING' : 
             return {

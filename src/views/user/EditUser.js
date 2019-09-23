@@ -2,68 +2,46 @@ import React from 'react';
 import { Container, Row, Col, Card, CardBody, DatePicker } from 'shards-react';
 import PageTitle from '../../components/common/PageTitle';
 import '../../assets/range-date-picker.css';
-import { appName, customerStyles, url } from '../../global';
+import { appName, url } from '../../global';
 import { Helmet } from 'react-helmet';
 import { Link, Redirect } from 'react-router-dom';
 import { withToastManager } from 'react-toast-notifications';
-import { updateUser, getUser } from '../../store/actions/userAction';
+import AsyncSelect from 'react-select/async';
+import { customerStyles } from '../../utils/selectStyle';
+import Axios from 'axios';
+import { getUser, updateUser } from '../../store/actions/userAction';
 import {connect} from 'react-redux';
 import Loading from 'react-loading-bar';
 import Error500 from '../Error500';
-import AsyncSelect from 'react-select/async';
-import Axios from 'axios';
+import Error403 from '../Error403';
 
 class EditUser extends React.Component {
 
     state = {
+		date_of_birth: undefined,
+        photo_file: 'Choose file...',
+        photo: '',
         name: '',
-        email: '',
+        username: '',
+        place_of_birth: '',
         password: '',
         password_confirmation: '',
+        email: '',
         phone_number: '',
-        date_of_birth: '',
-        place_of_birth: '',
-        gender: 'Male',
-        photo: 'Choose file...',
-        photo_file: '',
         role_id: '',
-        role_name: ''
-    }
-    
-    handleChange = (e) => {
-		this.setState({
-			...this.state,
-			[e.target.id]: e.target.value
-		});
-	}
-
-    handleChangeUpload = (e) => {
-        const value = e.target.value;
-        const filedata = e.target.dataset.file;
-		const filename = value.split('\\');
-		this.setState({
-			...this.state,
-			[e.target.id]: filename[filename.length - 1],
-		});
-
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (read) => {
-            this.setState({
-                ...this.state,
-                [filedata]: read.target.result
-            })
-        }
-        
+        role_name: '',
+        partner_id: '',
+        partner_name: '',
+        address: '',
+        gender: 'male'
     };
-
-    handleDobChange = (value) => {
-        this.setState({
-            ...this.state,
-            date_of_birth: new Date(value)
-        });
-    }
+    
+    handleDateOfBirthChange = (value) => {
+		this.setState({
+			...this.state,
+			date_of_birth: new Date(value)
+		});
+    };
 
     handleChangeSelect = (value, e) => {
         this.setState({
@@ -72,6 +50,32 @@ class EditUser extends React.Component {
             [`${e.name}_name`]: value ? value.label : null,
 		});
     }
+    
+    handleChangeUpload = (e) => {
+		const value = e.target.value;
+		const filename = value.split('\\');
+		this.setState({
+			...this.state,
+			photo_file: filename[filename.length - 1],
+		});
+
+		const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (e) => {
+            this.setState({
+				...this.state,
+				photo: e.target.result
+			})
+		}
+    };
+    
+    handleChange = (e) => {
+		this.setState({
+			...this.state,
+			[e.target.id]: e.target.value
+		});
+	}
 
 	handleSubmit = (e) => {
 		e.preventDefault();
@@ -104,50 +108,53 @@ class EditUser extends React.Component {
     }
 
     componentWillUpdate = (nextProps) => {
-        if (nextProps !== this.props) {
-            if (nextProps.data) {
-                this.setState({
-                    ...this.state,
-                    name: nextProps.data.name ? nextProps.data.name : '',
-                    email: nextProps.data.email ? nextProps.data.email : '',
-                    phone_number: nextProps.data.phone_number ? nextProps.data.phone_number : '',
-                    date_of_birth: nextProps.data.date_of_birth ? nextProps.data.date_of_birth : '',
-                    place_of_birth: nextProps.data.place_of_birth ? nextProps.data.place_of_birth : '',
-                    gender: nextProps.data.gender ? nextProps.data.gender : '',
-                    photo: nextProps.data.photo ? nextProps.data.photo : 'Choose file...',
-                    role_id: nextProps.data.role_id ? nextProps.data.role_id : '',
-                    role_name: nextProps.data.role && nextProps.data.role.name ? nextProps.data.role.name : '',
-                });
-            }
+        if (nextProps.data !== this.props.data) {
+            this.setState({
+                ...this.state,
+                date_of_birth: nextProps.data.date_of_birth ? new Date(nextProps.data.date_of_birth) : '',
+                photo_file: nextProps.data.photo_file ? nextProps.data.photo_file : '',
+                name: nextProps.data.name ? nextProps.data.name : '',
+                username: nextProps.data.username ? nextProps.data.username : '',
+                place_of_birth: nextProps.data.place_of_birth ? nextProps.data.place_of_birth : '',
+                email: nextProps.data.email ? nextProps.data.email : '',
+                phone_number: nextProps.data.phone_number ? nextProps.data.phone_number : '',
+                role_id: nextProps.data.role_id ? nextProps.data.role_id : '',
+                role_name: nextProps.data.role && nextProps.data.role.name ? nextProps.data.role.name : '',
+                partner_id: nextProps.data.partner_id ? nextProps.data.partner_id : '',
+                partner_name: nextProps.data.partner && nextProps.data.partner.name ? nextProps.data.partner.name : '',
+                address: nextProps.data.address ? nextProps.data.address : '',
+                gender: nextProps.data.gender ? nextProps.data.gender : 'male',
+            })
         }
     }
 
-    componentDidMount = () => {
-        this.props.getUser(this.props.match.params.id);
+    componentDidMount() {
+        this.props.getUser(this.props.match.params.id)
     }
     
 	render() {      
         const { fetching, error } = this.props;
         if (!sessionStorage.getItem('token')) return <Redirect to="/login" />
         if (error && error.status === 500) return <Error500 message={error.data.message} />
-		return (
+        if (error && error.status === 403) return <Error403 message={error.data.message} />
+        return (
          
 			<Container fluid className="main-content-container px-4">
                 <Loading
 						show={fetching}
-						color="purple"
+						color="blue"
 						showSpinner={false}
 						/>
 				<Helmet>
 					<title>Edit User | {appName} </title>
 				</Helmet>
 				<Row noGutters className="page-header py-4">
-                    <div className="col-md-8">
+                <div className="col-md-8">
 					    <PageTitle sm="4" title="Edit User" className="text-sm-left" />
                     </div>
                     <div className="col-md-4 text-right">
-                         <Link className="btn btn-secondary" to="/user">Back</Link>
-                    </div>
+                        <Link className="btn btn-secondary" to="/user">Back</Link>
+                    </div>	
 				</Row>
 				<Row>
 					<Col>
@@ -159,123 +166,146 @@ class EditUser extends React.Component {
                                                 <div className="col-md-6">
                                                     <div className="form-group">
                                                         <label className="control-label">Name <span className="text-danger">*</span></label>
-                                                        <input value={this.state.name} type="text" id="name" className={`form-control ${ error && error.data.errors.name && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: John Doe" />
+                                                        <input value={this.state.name} type="text" id="name" className={`form-control ${ error && error.data.errors.name && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: John Doe" maxLength={15} />
                                                         { 
-                                                            error && error.data.errors.name && <div class="invalid-feedback">{ error.data.errors.name[0] }</div>
+                                                            error && error.data.errors.name && <div className="invalid-feedback">{ error.data.errors.name[0] }</div>
                                                         }
                                                     </div>
 
                                                     <div className="form-group">
-                                                        <label className="control-label">Email <span className="text-danger">*</span></label>
-                                                        <input value={this.state.email} type="text" id="email" className={`form-control ${ error && error.data.errors.email && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: johndoe@example.com" />
+                                                        <label className="control-label">Username <span className="text-danger">*</span></label>
+                                                        <input value={this.state.username} type="text" id="username" className={`form-control ${ error && error.data.errors.username && 'is-invalid' }`} onChange={this.handleChange} placeholder="Username" />
                                                         { 
-                                                            error && error.data.errors.email && <div class="invalid-feedback">{ error.data.errors.email[0] }</div>
+                                                            error && error.data.errors.username && <div className="invalid-feedback">{ error.data.errors.username[0] }</div>
                                                         }
                                                     </div>
 
                                                     <div className="form-group">
-                                                        <label className="control-label">Phone Number <span className="text-danger">*</span></label>
-                                                        <input value={this.state.phone_number} type="text" id="phone_number" className={`form-control ${ error && error.data.errors.phone_number && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: 081234567890" />
+                                                        <label className="control-label">Gender <span className="text-danger">*</span></label>
+                                                        <select id="gender" value={this.state.gender} onChange={this.handleChange} className="form-control custom-select">
+                                                            <option value="male">Male</option>
+                                                            <option value="female">Female</option>
+                                                        </select>
                                                         { 
-                                                            error && error.data.errors.phone_number && <div class="invalid-feedback">{ error.data.errors.phone_number[0] }</div>
+                                                            error && error.data.errors.username && <div className="invalid-feedback">{ error.data.errors.username[0] }</div>
                                                         }
-                                                    </div>
-                                                    
-                                                    <div className="form-group">
-                                                        <label className="control-label">Password </label>
-                                                        <input type="password" id="password" className={`form-control ${ error && error.data.errors.password && 'is-invalid' }`} onChange={this.handleChange} placeholder="******" />
-                                                        { 
-                                                            error && error.data.errors.password && <div class="invalid-feedback">{ error.data.errors.password[0] }</div>
-                                                        }
-                                                        <div className="help-block">
-                                                            <small className="font-italic text-muted">*) Blank password if you don't wanna change password</small>
-                                                        </div>
                                                     </div>
 
-                                                    <div className="form-group">
-                                                        <label className="control-label">Retype Password</label>
-                                                        <input type="password" id="password_confirmation" className={`form-control ${ error && error.data.errors.password_confirmation && 'is-invalid' }`} onChange={this.handleChange} placeholder="******" />
-                                                        { 
-                                                            error && error.data.errors.password_confirmation && <div class="invalid-feedback">{ error.data.errors.password_confirmation[0] }</div>
-                                                        }
-                                                    </div>
-                                                    
-                                                   
-                                                </div>
-
-                                                <div className="col-md-6">
-                                                <div className="row">
+                                                    <div className="row">
                                                         <div className="col-md-6">
                                                             <div className="form-group">
                                                                 <label className="control-label">Place of birth</label>
-                                                                <input value={this.state.place_of_birth} type="text" className="form-control" id="place_of_birth" placeholder="eg: Jakarta" onChange={this.handleChange} />
-                                                                { 
-                                                                    error && error.data.errors.place_of_birth && <div class="invalid-feedback">{ error.data.errors.place_of_birth[0] }</div>
-                                                                }
+                                                                <input value={this.state.place_of_birth} type="text" id="place_of_birth" className="form-control" onChange={this.handleChange} placeholder="eg: Jakarta" />
                                                             </div>
                                                         </div>
                                                         <div className="col-md-6">
                                                             <div className="form-group">
                                                                 <label className="control-label">Date of birth</label>
-                                                            <DatePicker 
-                                                                className={`form-control ${ error && error.data.errors.date_of_birth && 'is-invalid' }`} 
-                                                                onChange={ this.handleDobChange } 
-                                                                placeholderText="mm/dd/yyyy"
-                                                                selected={ this.state.date_of_birth }
-                                                                id="date_of_birth"
-                                                            />
-                                                            { 
-                                                                error && error.data.errors.date_of_birth && <div class="invalid-feedback">{ error.data.errors.date_of_birth[0] }</div>
-                                                            }
+                                                                <DatePicker
+                                                                    size="md"
+                                                                    selected={this.state.date_of_birth}
+                                                                    onChange={this.handleDateOfBirthChange}
+                                                                    dropdownMode="select"
+                                                                    placeholderText="12/31/1999"
+                                                                />
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
+
+                                                    <div className="row">
+                                                        <div className="col-md-6">
+                                                            <div className="form-group">
+                                                                <label className="control-label">Password <span className="text-danger">*</span></label>
+                                                                <input type="password" id="password" className={`form-control ${ error && error.data.errors.password && 'is-invalid' }`} onChange={this.handleChange} placeholder="secret password" />
+                                                                { 
+                                                                    error && error.data.errors.password && <div className="invalid-feedback">{ error.data.errors.password[0] }</div>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-6">
+                                                            <div className="form-group">
+                                                                <label className="control-label">Retype Password <span className="text-danger">*</span></label>
+                                                                <input type="password" id="password_confirmation" className="form-control" onChange={this.handleChange} placeholder="retype your password" />
+                                                            </div>
+                                                        </div>
+                                                        <small className="col-md-12 mb-3 help-block help-block"><em>*) Blank this field if you don't want to change password</em></small>
+                                                    </div>
 
                                                     <div className="form-group">
                                                         <label className="control-label">Photo</label>
-                                                        <div className="custom-file">
+                                                        <div className="custom-file mb-3">
                                                             <input
                                                                 id="photo"
-                                                                data-file="photo_file"
                                                                 type="file"
-                                                                className={`custom-file-input ${ error && error.data.errors.photo_file && 'is-invalid' }`}
+                                                                className="custom-file-input"
                                                                 onChange={this.handleChangeUpload}
-                                                                accept="image/*"
                                                             />
                                                             <label
                                                                 className="custom-file-label"
                                                                 htmlFor="customFile2"
                                                                 id="placeholderCustomFile2"
                                                             >
-                                                                {this.state.photo}
+                                                                {this.state.photo_file}
                                                             </label>
                                                         </div>
-                                                        { 
-                                                            error && error.data.errors.photo_file && <small class="help-block font-weight-bold text-danger">{ error.data.errors.photo_file[0] }</small>
-                                                        }
-                                                    </div>
-
-                                                    <div className="form-group">
-                                                        <label className="control-label">Gender</label>
-                                                        <select value={this.state.gender} id="gender" className="form-control custom-select" onChange={this.handleChange}>
-                                                            <option value="Male">Male</option>
-                                                            <option value="Female">Female</option>
-                                                        </select>
-                                                    </div>
-                                                    
-                                                    <div className="form-group">
-                                                        <label className="control-label">Role <span className="text-danger">*</span></label>
-                                                        <AsyncSelect value={{ label: this.state.role_name, value: this.state.role }} isClearable={true} className={error && error.data.errors.role_id && 'is-invalid-select'} styles={customerStyles} loadOptions={roleOptions} name="role" placeholder="Type to search" onChange={this.handleChangeSelect} />
-                                                        { 
-                                                            error && error.data.errors.role_id && <small class="font-weight-bold text-danger">{ error.data.errors.role_id[0] }</small>
-                                                        }
                                                     </div>
 
                                                 </div>
 
+
+                                                <div className="col-md-6">
+                                                    <div className="row">
+                                                        <div className="col-md-6">
+                                                            <div className="form-group">
+                                                                <label className="control-label">Email <span className="text-danger">*</span></label>
+                                                                <input value={this.state.email} type="text" id="email" className={`form-control ${ error && error.data.errors.email && 'is-invalid' }`} onChange={this.handleChange} placeholder="eg: johndoe@example.com" />
+                                                                { 
+                                                                    error && error.data.errors.email && <div className="invalid-feedback">{ error.data.errors.email[0] }</div>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-6">
+                                                            <div className="form-group">
+                                                                <label className="control-label">Phone number</label>
+                                                                <input value={this.state.phone_number} type="text" id="phone_number" className={`form-control ${ error && error.data.errors.phone_number && 'is-invalid' }`}  onChange={this.handleChange} placeholder="eg: 08123456789" />
+                                                                { 
+                                                                    error && error.data.errors.phone_number && <div className="invalid-feedback">{ error.data.errors.phone_number[0] }</div>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="form-group">
+                                                        <label className="control-label">Partner </label>
+                                                        <AsyncSelect value={{ label: this.state.partner_name, value: this.state.partner_id }} isClearable={true} className={error && error.data.errors.partner_id && 'is-invalid-select'} styles={customerStyles} loadOptions={partnerOptions} placeholder="Type to search" onChange={this.handleChangeSelect} name="partner" />
+                                                        { 
+                                                            error && error.data.errors.partner_id && <small className="text-danger">{ error.data.errors.partner_id[0] }</small>
+                                                        }
+                                                    </div>
+
+                                                    <div className="form-group">
+                                                        <label className="control-label">Role <span className="text-danger">*</span></label>
+                                                        <AsyncSelect value={{ label: this.state.role_name, value: this.state.role_id }} isClearable={true} className={error && error.data.errors.role_id && 'is-invalid-select'} styles={customerStyles} loadOptions={promiseOptions} placeholder="Type to search" onChange={this.handleChangeSelect} name="role" />
+                                                        { 
+                                                            error && error.data.errors.role_id && <small className="text-danger">{ error.data.errors.role_id[0] }</small>
+                                                        }
+                                                    </div>
+
+                                                    <div className="form-group">
+                                                        <label className="control-label">Address</label>
+                                                        <textarea value={this.state.address} id="address" rows="5" className="form-control" onChange={this.handleChange} placeholder="Street name, Building Number, Residence, Region, State"></textarea>
+                                                    </div>
+
+                                                </div>
                                                 <div className="col-md-12 text-right">
                                                     <hr/>
-                                                    <button className="btn btn-secondary" type="submit" onClick={this.handleClickToast}>Save</button>
+                                                    {
+                                                        this.props.fetching ? (
+                                                            <button className="btn btn-secondary btn-disabled" type="submit" disabled><i className="mdi mdi-loading mdi-spin mr-2"></i>Loading...</button>
+                                                        ) : (
+                                                            <button className="btn btn-secondary" type="submit">Save Changes</button>
+                                                        )
+                                                    }
                                                     <button className="btn btn-default" type="reset">Reset</button>
                                                 </div>
                                             </div>
@@ -292,15 +322,37 @@ class EditUser extends React.Component {
 }
 
 const filterRole = (roles) => {
-    const options = roles.map(role => {
-        return { label: role.name, value: role.id }
+   const options = roles.map(role => {
+       return { label: role.name, value: role.id }
+   })
+
+   return options;
+};
+  
+const promiseOptions = (inputValue, callback) => {
+    Axios.get(`${url}/role/list`, {
+        params: {
+            name: inputValue,
+        }, 
+        headers: {
+            Authorization: `Bearer ${sessionStorage.getItem('token')}`
+        }
+    }).then(response => {
+        callback(filterRole(response.data.data));
+    });
+}
+
+
+const filterPlant = (partners) => {
+    const options = partners.map(partner => {
+        return { label: partner.code, value: partner.id }
     })
  
     return options;
  };
    
- const roleOptions = (inputValue, callback) => {
-     Axios.get(`${url}/role/list`, {
+ const partnerOptions = (inputValue, callback) => {
+     Axios.get(`${url}/partner/list`, {
          params: {
              name: inputValue,
          }, 
@@ -308,9 +360,9 @@ const filterRole = (roles) => {
              Authorization: `Bearer ${sessionStorage.getItem('token')}`
          }
      }).then(response => {
-         callback(filterRole(response.data.data));
+         callback(filterPlant(response.data.data));
      });
-}
+ }
 
 const mapStateToProps = (state) => {
     return {
@@ -326,8 +378,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        updateUser: (id, data) => dispatch(updateUser(id, data)),
-        getUser: id => dispatch(getUser(id))
+        getUser: id => dispatch(getUser(id)),
+        updateUser: (id, data) => dispatch(updateUser(id, data))
     }
 }
 

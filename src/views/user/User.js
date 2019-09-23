@@ -12,6 +12,7 @@ import Loading from 'react-loading-bar';
 import ScrollToTop from '../../components/layout/ScrollToTop';
 import { withToastManager } from 'react-toast-notifications';
 import Error500 from '../Error500';
+import Error403 from '../Error403';
 
 class User extends React.Component {
 
@@ -121,18 +122,19 @@ class User extends React.Component {
 	render() {
 
         const { payload, fetching, error } = this.props;
-        
         if (!sessionStorage.getItem('token')) return <Redirect to="/login" />
 		if (error && error.status === 500) return <Error500 message={error.data.message} />
+		if (error && error.status === 403) return <Error403 message={error.data.message} />
 
         const users = payload.data && payload.data.data.map(user => {
             return (
                     <div className="col-md-4" key={user.id}>
                         <div className="profile">
                             <div className="profile-card">
-                                <img src={user.photo_url} alt={user.name} className="img img-circle" />
+                                <img src={user.picture_url } alt={user.name} className="img img-circle" />
                                 <h2 className="title-profile">{ user.name }</h2>
-                                <small className="text-muted">{ user.place_of_birth }, { moment(user.date_of_birth).format('LL') }</small>
+                                <p className="text-secondary">{ user.username }</p>
+                                <small className="text-muted">{ user.place_of_birth }, { moment(user.date_of_birth).format('LL') } ({ user.age })</small>
                                 <p className="text-primary">{ user.role && user.role.name }</p>
                                 <Link className="btn btn-sm btn-link text-primary py-0 px-0 pr-2" to={`user/view/${user.id}`}>
                                     View

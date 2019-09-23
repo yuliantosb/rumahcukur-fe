@@ -5,18 +5,18 @@ const initState = {
 	payload: {},
 	saved: false,
 	message: null,
-	user: {},
+	role: {},
 	isDeleted: false,
 };
 
-const userReducer = (state = initState, action) => {
+const roleReducer = (state = initState, action) => {
 	switch (action.type) {
-		case 'USER_PENDING':
+		case 'ROLE_PENDING':
 			return {
 				...state,
 				fetching: true
 			};
-		case 'USER_REJECTED':
+		case 'ROLE_REJECTED':
 			
 			if (action.payload.response.status === 401) {
 				sessionStorage.removeItem('token');
@@ -27,7 +27,7 @@ const userReducer = (state = initState, action) => {
 				error: action.payload.response,
 				fetching: false
 			};
-		case 'USER_FULFILLED':
+		case 'ROLE_FULFILLED':
 			return {
 				...state,
 				fetching: false,
@@ -37,12 +37,12 @@ const userReducer = (state = initState, action) => {
 				saved: false,
 				isDeleted: false
 			};
-		case 'SAVE_USER_PENDING' : 
+		case 'SAVE_ROLE_PENDING' : 
 			return {
 				...state,
 				fetching: true
 			};
-		case 'SAVE_USER_REJECTED' :
+		case 'SAVE_ROLE_REJECTED' :
 			if (action.payload.response.status === 401) {
 				sessionStorage.removeItem('token');
 			}
@@ -53,7 +53,7 @@ const userReducer = (state = initState, action) => {
 				fetching: false,
 				fetched: false
 			};
-		case 'SAVE_USER_FULFILLED':
+		case 'SAVE_ROLE_FULFILLED':
 			return {
 				...state,
 				fetching: false,
@@ -62,12 +62,12 @@ const userReducer = (state = initState, action) => {
 				error: null,
 				saved: true
 			};
-		case 'GET_USER_PENDING':
+		case 'GET_ROLE_PENDING':
 			return {
 				...state,
 				fetching: true
 			};
-		case 'GET_USER_REJECTED':
+		case 'GET_ROLE_REJECTED':
 			
 			if (action.payload.response.status === 401) {
 				sessionStorage.removeItem('token');
@@ -78,21 +78,21 @@ const userReducer = (state = initState, action) => {
 				error: action.payload.response,
 				fetching: false
 			};
-		case 'GET_USER_FULFILLED':
+		case 'GET_ROLE_FULFILLED':
 			return {
 				...state,
 				fetching: false,
 				fetched: true,
-				user: action.payload.data,
+				role: action.payload.data,
 				error: null,
 				saved: false,
 			};
-		case 'UPDATE_USER_PENDING' : 
+		case 'UPDATE_ROLE_PENDING' : 
 			return {
 				...state,
 				fetching: true
 			};
-		case 'UPDATE_USER_REJECTED' :
+		case 'UPDATE_ROLE_REJECTED' :
 			if (action.payload.response.status === 401) {
 				sessionStorage.removeItem('token');
 			}
@@ -103,7 +103,7 @@ const userReducer = (state = initState, action) => {
 				fetching: false,
 				fetched: false
 			};
-		case 'UPDATE_USER_FULFILLED':
+		case 'UPDATE_ROLE_FULFILLED':
 			return {
 				...state,
 				fetching: false,
@@ -112,12 +112,12 @@ const userReducer = (state = initState, action) => {
 				error: null,
 				saved: true
 			};
-		case 'DELETE_USER_PENDING' : 
+		case 'DELETE_ROLE_PENDING' : 
 			return {
 				...state,
 				fetching: true
 			};
-		case 'DELETE_USER_REJECTED' :
+		case 'DELETE_ROLE_REJECTED' :
 			if (action.payload.response.status === 401) {
 				sessionStorage.removeItem('token');
 			}
@@ -127,7 +127,7 @@ const userReducer = (state = initState, action) => {
 				error: action.payload.response,
 				fetching: false
 			};
-		case 'DELETE_USER_FULFILLED':
+		case 'DELETE_ROLE_FULFILLED':
 			return {
 				...state,
 				fetching: false,
@@ -141,4 +141,4 @@ const userReducer = (state = initState, action) => {
 	}
 };
 
-export default userReducer;
+export default roleReducer;
